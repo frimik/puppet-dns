@@ -1,4 +1,4 @@
-define dns::zone ($type){
+define dns::zone ($zonetype){
     include dns
     include dns::params
 
