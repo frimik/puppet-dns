@@ -10,7 +10,7 @@ define dns::zone ($type){
     concat::fragment {
         "dns_zone_${zone}":
             target => "${dns_dir}/named.conf.zones",
-            content => tempalte("dns/zone.pp.erb");
+            content => template("dns/zone.pp.erb");
     }
 
 }
