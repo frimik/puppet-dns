@@ -1,5 +1,7 @@
 class dns {
     include dns::params
+    $namedconf_path = $dns::params::namedconf_path
+    $dns_dir = $dns::params::dns_dir
 
     package { "dns": 
         ensure => installed,
