@@ -4,12 +4,12 @@ define dns::zone ($zonetype){
 
     $zone = $name
     $filename = "db.${zone}"
-    $dns_dir = $dns::params::dns_dir
+    $dnsdir = $dns::params::dnsdir
     $zonefilename = "${type}/${name}"
 
     concat::fragment {
         "dns_zone_${zone}":
-            target => "${dns_dir}/named.conf.zones",
+            target => "${dnsdir}/named.conf.zones",
             content => template("dns/zone.pp.erb");
     }
 
