@@ -13,6 +13,5 @@ define dns::zone ($zonetype){
             target => "$publicviewpath",
             content => template("dns/publicView.conf.erb");
     }
-
 }
 

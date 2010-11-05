@@ -42,6 +42,11 @@ class dns {
             group => 0,
             mode => 755,
             ensure => directory;
+        "$optionspath":
+            owner => root,
+            group => 0,
+            mode => 0644,
+            content => template("dns/options.conf.erb");
 	}
 
 	include concat::setup
