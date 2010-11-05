@@ -7,6 +7,9 @@ class dns {
     $rndckeypath = $dns::params::rndckeypath
     $rndc_alg = $dns::params::rndc_alg
     $rndc_secret = $dns::params::rndc_secret
+    $optionspath = $dns::params::optionspath
+    $publicviewpath = $dns::params::publicviewpath
+    $publicview = $dns::params::publicview
 
     if $operatingsystem != "Darwin" { #linux specifics
         package { "dns": 
@@ -42,7 +45,19 @@ class dns {
 	}
 
 	include concat::setup
-    concat { "${dnsdir}/named.conf.zones": }
+
+    concat::fragment {
+        "dns_zone_${zone}":
+            order => 5,
+            target => "$publicviewpath",
+            content => template("dns/publicView.conf-header.erb");
+        "dns_zone_${zone}":
+            order => 15,
+            target => "$publicviewpath",
+            content => "};";
+    }
+    concat { "${publicviewpath}": }
+
    
     service {
         "named":
