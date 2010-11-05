@@ -6,11 +6,12 @@ define dns::zone ($zonetype){
     $filename = "db.${zone}"
     $dnsdir = $dns::params::dnsdir
     $zonefilename = "${type}/${name}"
+    $publicviewpath = $dns::params::publicviewpath
 
     concat::fragment {
         "dns_zone_${zone}":
-            target => "${dnsdir}/named.conf.zones",
-            content => template("dns/zone.pp.erb");
+            target => "$publicviewpath",
+            content => template("dns/publicView.conf.erb");
     }
 
 }
