@@ -1,9 +1,8 @@
 acl "<%= publicview %>" {localnets;localhost;};
 
-view "<&= publicview %>" {
-//GUID=F70FE300-D06D-4A88-8D3E-F03A1CEB14EC;
+view "<%= publicview %>" {
 
-	allow-recursion {"com.apple.ServerAdmin.DNS.public";};
+	allow-recursion {"<%= publicview %>";};
 
 	zone "." IN  {
 		type hint;
