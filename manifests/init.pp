@@ -1,6 +1,6 @@
 class dns {
     include dns::params
-    
+
     $namedconf_path = $dns::params::namedconf_path
     $dnsdir = $dns::params::dnsdir
     $dns_server_package = $dns::params::dns_server_package
@@ -10,6 +10,8 @@ class dns {
     $optionspath = $dns::params::optionspath
     $publicviewpath = $dns::params::publicviewpath
     $publicview = $dns::params::publicview
+    $vardir = $dns::params::vardir
+    $namedservicename = $dns::params::namedservicename
 
     if $operatingsystem != "Darwin" { #linux specifics
         package { "dns": 
@@ -17,58 +19,63 @@ class dns {
             name => "${dns_server_package}";
         }
 
-    	iptables { 
+        iptables {
             "dns":
                 proto => "udp",
                 dport => "53",
                 jump => "ACCEPT",
             }
     }
-	
-	file {
-		"$namedconf_path":
-			owner	=> root,
-			group	=> root,
-			mode	=> 644,
-			require	=> Package["dns"],
-			content	=> template("dns/named.conf.erb");
-        "$dnsdir":
-            ensure => directory,
-            owner => root,
-            group => root,
-            mode => 755;
-        "$vardir": 
-            owner => root,
-            group => 0,
-            mode => 755,
-            ensure => directory;
-        "$optionspath":
-            owner => root,
-            group => 0,
-            mode => 0644,
-            content => template("dns/options.conf.erb");
-	}
 
-	include concat::setup
+    file {
+        "$namedconf_path":
+            owner   => root,
+            group   => 0,
+            mode    => 644,
+            require => $operatingsystem ? {
+                linux => Package["dns"],
+                darwin => undef,
+            },
+            content => template("dns/named.conf.erb");
+        "$dnsdir":
+            ensure  => directory,
+            owner   => root,
+            group   => 0,
+            mode    => 755;
+        "$vardir":
+            owner   => root,
+            group   => 0,
+            mode    => 755,
+            ensure  => directory;
+        "$optionspath":
+            owner   => root,
+            group   => 0,
+            mode    => 0644,
+            content => template("dns/options.conf.erb");
+    }
+
+    include concat::setup
 
     concat::fragment {
-        "dns_zone_${zone}":
-            order => 5,
+        "dns_zone_${zone}-header":
+            order => 05,
             target => "$publicviewpath",
             content => template("dns/publicView.conf-header.erb");
-        "dns_zone_${zone}":
+        "dns_zone_${zone}-footer":
             order => 15,
             target => "$publicviewpath",
             content => "};";
     }
     concat { "${publicviewpath}": }
 
-   
     service {
-        "named":
+        "$namedservicename":
             enable    => "true",
             ensure    => "running",
-            require   => Package["dns"];
+            require   => $operatingsystem ? {
+                linux => Package["dns"],
+                darwin => undef,
+            };
    }
 
     dns::rndckey {
@@ -76,7 +83,5 @@ class dns {
             secret => $rndc_secret,
             alg    => $rndc_alg;
     }
-        
-        
 }
 

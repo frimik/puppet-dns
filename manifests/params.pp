@@ -9,12 +9,13 @@ class dns::params {
         debian => "bind9",
         ubuntu => "bind9",
         centos => "bind",
+        default => undef,
     }
     $namedconf_path = "/etc/named.conf"
     $vardir = "/var/named"
     $optionspath = $operatingsystem ? {
         darwin => "${dnsdir}/options.conf.apple",
-        default => "${dnsdir}/options.conf"
+        default => "${dnsdir}/options.conf",
     }
 
     #pertaining to rndc
@@ -24,14 +25,18 @@ class dns::params {
 
     #pertaining to views
     $publicviewpath = $operatingsystem ? {
-        darwin => "${dnsdir}/publicView.conf.apple"
+        darwin => "${dnsdir}/publicView.conf.apple",
         default => "${dnsdir}/publicView.conf",
     }
     $publicview = $operatingsystem ? {
         darwin => "com.apple.ServerAdmin.DNS.public",
-        default =? "DNS.public",
+        default => "DNS.public",
     }
 
-
+    $zonefilepath = "${vardir}/zones"
+    $namedservicename = $operatingsystem ? {
+        darwin => "org.isc.named",
+        linux => "named",
+    }
 }
 

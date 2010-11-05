@@ -1,4 +1,4 @@
-define dns::zone ($zonetype){
+define dns::zone ($zonetype="master",$soa,$reverse="false"){
     include dns
     include dns::params
 
@@ -7,11 +7,13 @@ define dns::zone ($zonetype){
     $dnsdir = $dns::params::dnsdir
     $zonefilename = "${type}/${name}"
     $publicviewpath = $dns::params::publicviewpath
+    $zonefilepath = $dns::params::zonefilepath
 
     concat::fragment {
-        "dns_zone_${zone}":
+        "dns_zone_${zone}": # this sets the named zones config
             target => "$publicviewpath",
             content => template("dns/publicView.conf.erb");
     }
+
 }
 
