@@ -15,7 +15,9 @@ options  {
 // a caching only nameserver config
 // 
 logging {
+<% if operatingsystem == "Darwin" %>
 	include "/etc/dns/loggingOptions.conf.apple";
+<% end %>
 };
 
 // Public view read by Server Admin
