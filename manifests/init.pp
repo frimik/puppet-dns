@@ -12,6 +12,7 @@ class dns {
     $publicview = $dns::params::publicview
     $vardir = $dns::params::vardir
     $namedservicename = $dns::params::namedservicename
+    $zonefilepath = $dns::params::zonefilepath
 
     if $operatingsystem != "Darwin" { #linux specifics
         package { "dns": 
@@ -33,7 +34,7 @@ class dns {
             group   => 0,
             mode    => 644,
             require => $operatingsystem ? {
-                linux => Package["dns"],
+                centos => Package["dns"],
                 darwin => undef,
             },
             content => template("dns/named.conf.erb");
@@ -52,6 +53,26 @@ class dns {
             group   => 0,
             mode    => 0644,
             content => template("dns/options.conf.erb");
+        "${vardir}/named.ca":
+            owner   => root,
+            group   => 0,
+            mode   => 644,
+	    source => "puppet:///modules/dns/named.ca";	
+        "${vardir}/named.local":
+            owner   => root,
+            group   => 0,
+            mode   => 644,
+	    source => "puppet:///modules/dns/named.local";
+        "${vardir}/localhost.zone":
+            owner   => root,
+            group   => 0,
+            mode   => 644,
+	    source => "puppet:///modules/dns/localhost.zone";
+        "$zonefilepath":
+            owner   => root,
+            group   => 0,
+            mode   => 755,
+            ensure  => directory;
     }
 
     include concat::setup
@@ -73,7 +94,7 @@ class dns {
             enable    => "true",
             ensure    => "running",
             require   => $operatingsystem ? {
-                linux => Package["dns"],
+                centos => Package["dns"],
                 darwin => undef,
             };
    }
