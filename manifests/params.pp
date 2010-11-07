@@ -36,7 +36,7 @@ class dns::params {
     $zonefilepath = "${vardir}/zones"
     $namedservicename = $operatingsystem ? {
         darwin => "org.isc.named",
-        linux => "named",
+        centos => "named",
     }
 }
 
