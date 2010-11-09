@@ -11,7 +11,7 @@ define dns::host ($ip,$type='A',$comment='',$zone) {
         "dns_zonefile_${zone}_{$host}": # build zonefile header
             order => "15",
             target => "${vardir}/${filename}",
-            content => "${host} IN ${type} ${ip}";
+            content => "${host} IN ${type} ${ip}\n";
     }
 
 }
