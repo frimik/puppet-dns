@@ -81,10 +81,12 @@ class dns {
         "dns_zone_${zone}-header":
             order => 05,
             target => "$publicviewpath",
+	    notify => Service["$namedservicename"],
             content => template("dns/publicView.conf-header.erb");
         "dns_zone_${zone}-footer":
             order => 15,
             target => "$publicviewpath",
+	    notify => Service["$namedservicename"],
             content => "};";
     }
     concat { "${publicviewpath}": }
