@@ -93,9 +93,11 @@ class dns {
 
     service {
         "$namedservicename":
-            enable    => "true",
-            ensure    => "running",
-            require   => $operatingsystem ? {
+            enable     => "true",
+            ensure     => "running",
+            hasstatus  => "true",
+            hasrestart => "true",
+            require    => $operatingsystem ? {
                 centos => Package["dns"],
                 darwin => undef,
             };
