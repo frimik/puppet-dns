@@ -1,5 +1,6 @@
 dns::host {
-    "host1.zlan":
-        ip => "10.210.18.10",
-        type => 'A',
+  "host1.my.net":
+    ip => "10.0.0.20",
+    type => 'A',
+}
 
