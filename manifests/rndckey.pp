@@ -3,7 +3,10 @@ define dns::rndckey ($alg = "hmac-md5",$secret = "APIEQEbbut1VcDEC/p8PRg==") {
     file {
         "$rndckeypath":
             owner => root,
-            group => named,
+            group => $operatingsystem ? {
+              debian  => "bind",
+              default => "named",
+            },
             mode => 0640,
             content => template("dns/rndc.key.erb");
     }
